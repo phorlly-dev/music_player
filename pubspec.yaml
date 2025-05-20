@@ -1,0 +1,43 @@
+name: music_player
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.9.0-117.0.dev
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  cupertino_icons: ^1.0.8
+  firebase_core:
+  cloud_firestore:
+  path_provider:
+  path:
+  permission_handler:
+  image_picker:
+  flutter_svg:
+  just_audio:
+  rxdart:
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
+  
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/logo.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    # - images/
+    - assets/images/
+    - assets/svgs/
+    - assets/icons/
+    - assets/audios/
