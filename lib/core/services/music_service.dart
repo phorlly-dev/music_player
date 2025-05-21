@@ -3,9 +3,9 @@ import 'package:music_player/components/audio_view.dart';
 import 'package:music_player/core/models/audio_file.dart';
 import 'package:music_player/core/services/service.dart';
 
-class MusicService {
+class MusicService extends Service {
   Future<List<AudioFile>> index() {
-    return Service().geter(
+    return geter(
       collection: 'musics',
       fromMap: (data, id) => AudioFile.fromMap(data, id),
     );
@@ -13,7 +13,7 @@ class MusicService {
 
   // Add a new
   Future<void> store(AudioFile object) async {
-    await Service().poster<AudioFile>(
+    await poster<AudioFile>(
       model: object,
       collection: 'musics',
       toMap: (value) => value.toMap(),
@@ -23,21 +23,17 @@ class MusicService {
   // Update an existing AudioFile
   Future<void> update(AudioFile object) async {
     // Update the AudioFile in Firestore
-    await Service().puter(
-      collection: 'musics',
-      docId: object.id,
-      toMap: object.toMap(),
-    );
+    await puter(collection: 'musics', docId: object.id, toMap: object.toMap());
   }
 
   // Delete an AudioFile by its ID
   Future<void> remove(String id) async {
-    await Service().deleter(collection: 'musics', docId: id);
+    await deleter(collection: 'musics', docId: id);
   }
 
   // Stream builder for reusable widget
   Widget stream(BuildContext context) {
-    return Service().streamBuilder<AudioFile>(
+    return streamBuilder<AudioFile>(
       collection: 'musics',
       fromMap: (data, docId) => AudioFile.fromMap(data, docId),
       builder: (context, data) {
@@ -72,7 +68,7 @@ class MusicService {
 
   // Stream builder for reusable widget
   Widget playListStream(BuildContext context) {
-    return Service().streamBuilder<AudioFile>(
+    return streamBuilder<AudioFile>(
       collection: 'musics',
       fromMap: (data, docId) => AudioFile.fromMap(data, docId),
       builder: (context, data) {
@@ -83,7 +79,7 @@ class MusicService {
 
   // Stream builder for reusable widget
   Widget albumStream(BuildContext context) {
-    return Service().streamBuilder<AudioFile>(
+    return streamBuilder<AudioFile>(
       collection: 'musics',
       fromMap: (data, docId) => AudioFile.fromMap(data, docId),
       builder: (context, data) {
@@ -94,7 +90,7 @@ class MusicService {
 
   // Stream builder for reusable widget
   Widget favoriteStream(BuildContext context) {
-    return Service().streamBuilder<AudioFile>(
+    return streamBuilder<AudioFile>(
       collection: 'musics',
       fromMap: (data, docId) => AudioFile.fromMap(data, docId),
       builder: (context, data) {

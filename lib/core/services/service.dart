@@ -37,7 +37,7 @@ class Service {
   }
 
   /// Stream documents in real-time
-  Stream<List<T>> stream<T>({
+  Stream<List<T>> streamer<T>({
     required String collection,
     required T Function(Map<String, dynamic> data, String docId) fromMap,
   }) {
@@ -85,7 +85,7 @@ class Service {
     required Widget Function(BuildContext context, List<T> data) builder,
   }) {
     return StreamBuilder<List<T>>(
-      stream: stream(collection: collection, fromMap: fromMap),
+      stream: streamer(collection: collection, fromMap: fromMap),
       builder: (context, snapshot) {
         // log('snapshot: ${snapshot.data}');
         if (snapshot.connectionState == ConnectionState.waiting) {
