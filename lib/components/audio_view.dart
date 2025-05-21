@@ -157,7 +157,7 @@ class AudioView {
       album: 'Vol 1',
       duration: Duration(minutes: 4, seconds: 12),
       url: 'assets/audios/1.mp3',
-      artworkUrl: 'assets/images/2.png',
+      artworkUrl: 'assets/images/1.png',
       isFavorite: true,
     ),
     AudioFile(
@@ -167,7 +167,7 @@ class AudioView {
       album: 'Vol 1',
       duration: Duration(minutes: 3, seconds: 45),
       url: 'assets/audios/2.mp3',
-      artworkUrl: 'assets/images/1.png',
+      artworkUrl: 'assets/images/2.png',
       isFavorite: false,
     ),
     AudioFile(

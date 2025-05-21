@@ -76,7 +76,11 @@ class _SongPlayerState extends State<SongPlayer> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ImageAsset(path: widget.audioFile.artworkUrl, w: 500, h: 250),
+                ImageAsset(
+                  path: widget.audioFile.artworkUrl,
+                  widthFraction: 0.8, // 80% of screen width
+                  heightFraction: 0.4, // 40% of screen height
+                ),
                 const SizedBox(height: 20),
                 Text(
                   widget.audioFile.title,

@@ -45,6 +45,7 @@ class AudioForm {
             TextFormField(
               controller: album,
               decoration: const InputDecoration(labelText: 'Album'),
+              validator: (value) => value!.isEmpty ? 'Enter Album' : null,
             ),
             // TextFormField(
             //   controller: duration,
@@ -149,6 +150,7 @@ class AudioForm {
             );
 
             if (context.mounted) {
+              Navigator.pop(context);
               Navigator.pop(context);
               Msg.message(
                 context,

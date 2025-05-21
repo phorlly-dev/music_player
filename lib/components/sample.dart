@@ -146,22 +146,34 @@ class ActionButtons extends StatelessWidget {
 
 class ImageAsset extends StatelessWidget {
   final String path;
-  final double w, h;
-  const ImageAsset({super.key, required this.path, this.w = 50, this.h = 50});
+  final double widthFraction; // Fraction of screen width
+  final double heightFraction; // Fraction of screen height
+
+  const ImageAsset({
+    super.key,
+    required this.path,
+    this.widthFraction = 0.12, // Default to 16% of screen width
+    this.heightFraction = 0.1, // Default to 10% of screen height
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size using MediaQuery
+    final screenSize = MediaQuery.of(context).size;
+    final double width = screenSize.width * widthFraction;
+    final double height = screenSize.height * heightFraction;
+
     return path.isNotEmpty
         ? ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image(
-              width: w,
-              height: h,
+              width: width,
+              height: height,
               fit: BoxFit.cover,
               image: AssetImage(path),
             ),
           )
-        : Icon(Icons.music_note, size: 100);
+        : const Icon(Icons.music_note, size: 100);
   }
 }
 
