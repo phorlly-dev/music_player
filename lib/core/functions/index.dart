@@ -34,4 +34,9 @@ class Funcs {
   static String numToStr(int key) {
     return key.toString().padLeft(2, '0');
   }
+
+  String capitalizeFirst(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
 }

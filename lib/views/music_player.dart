@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/core/services/audio_file_service.dart';
+import 'package:music_player/components/audio_form.dart';
+import 'package:music_player/components/favorite_group.dart';
+import 'package:music_player/components/index.dart';
+import 'package:music_player/core/services/music_service.dart';
 import 'package:music_player/components/tabbar.dart';
 import 'package:music_player/components/album_group.dart';
 import 'package:music_player/components/playlist_group.dart';
@@ -13,7 +16,7 @@ class MusicPlayer extends StatefulWidget {
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
-  final service = AudioFileService();
+  final service = MusicService();
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +25,21 @@ class _MusicPlayerState extends State<MusicPlayer> {
         title: 'Music Player UI',
         tabs: const [
           Tab(text: 'Songs'),
+          Tab(text: 'Favorites'),
           Tab(text: 'Playlists'),
           Tab(text: 'Albums'),
         ],
         tabViews: const [
           Center(child: MySong()),
+          Center(child: MyFavorite()),
           Center(child: MyPlayList()),
           Center(child: MyAlbum()),
         ],
+        button: Controls.icon(
+          pressed: () => AudioForm.showForm(context, null),
+          icon: Icons.add,
+          width: 40,
+        ),
       ),
     );
   }

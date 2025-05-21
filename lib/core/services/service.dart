@@ -7,17 +7,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Service {
-  static final firestore = FirebaseFirestore.instance;
+  final firestore = FirebaseFirestore.instance;
   // var result = FilePicker.platform.pickFiles();
   //for upload image files
 
   /// Create (Add) a new document with auto ID
-  static Future<String> create<T>({
+  Future<String> poster<T>({
     required T model,
-    required String collectionName,
+    required String collection,
     required Map<String, dynamic> Function(T model) toMap,
   }) async {
-    final docRef = firestore.collection(collectionName).doc();
+    final docRef = firestore.collection(collection).doc();
     final data = toMap(model);
 
     data['id'] = docRef.id;
@@ -27,49 +27,49 @@ class Service {
   }
 
   /// Read all documents from a collection
-  static Future<List<T>> readAll<T>({
-    required String collectionName,
+  Future<List<T>> geter<T>({
+    required String collection,
     required T Function(Map<String, dynamic> data, String docId) fromMap,
   }) async {
-    final snapshot = await firestore.collection(collectionName).get();
+    final snapshot = await firestore.collection(collection).get();
 
     return snapshot.docs.map((doc) => fromMap(doc.data(), doc.id)).toList();
   }
 
   /// Stream documents in real-time
-  static Stream<List<T>> streamAll<T>({
-    required String collectionName,
+  Stream<List<T>> stream<T>({
+    required String collection,
     required T Function(Map<String, dynamic> data, String docId) fromMap,
   }) {
-    return firestore.collection(collectionName).snapshots().map((snapshot) {
+    return firestore.collection(collection).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => fromMap(doc.data(), doc.id)).toList();
     });
   }
 
   /// Update an existing document by ID
-  static Future<void> update({
-    required String collectionName,
+  Future<void> puter({
+    required String collection,
     required String docId,
     required Map<String, dynamic> toMap,
   }) async {
-    await firestore.collection(collectionName).doc(docId).update(toMap);
+    await firestore.collection(collection).doc(docId).update(toMap);
   }
 
   /// Delete a document by ID
-  static Future<void> delete({
-    required String collectionName,
+  Future<void> deleter({
+    required String collection,
     required String docId,
   }) async {
-    await firestore.collection(collectionName).doc(docId).delete();
+    await firestore.collection(collection).doc(docId).delete();
   }
 
   /// Get a single document by ID
-  static Future<T?> readOne<T>({
-    required String collectionName,
+  Future<T?> header<T>({
+    required String collection,
     required String docId,
     required T Function(Map<String, dynamic> data, String docId) fromMap,
   }) async {
-    final doc = await firestore.collection(collectionName).doc(docId).get();
+    final doc = await firestore.collection(collection).doc(docId).get();
 
     if (doc.exists) {
       return fromMap(doc.data()!, doc.id);
@@ -79,13 +79,13 @@ class Service {
   }
 
   //Stream builder for reuseable widget
-  static StreamBuilder<List<T>> streamBuilder<T>({
-    required String collectionName,
+  StreamBuilder<List<T>> streamBuilder<T>({
+    required String collection,
     required T Function(Map<String, dynamic> data, String docId) fromMap,
     required Widget Function(BuildContext context, List<T> data) builder,
   }) {
     return StreamBuilder<List<T>>(
-      stream: streamAll(collectionName: collectionName, fromMap: fromMap),
+      stream: stream(collection: collection, fromMap: fromMap),
       builder: (context, snapshot) {
         // log('snapshot: ${snapshot.data}');
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -101,13 +101,13 @@ class Service {
     );
   }
 
-  static Future<String> localPath() async {
+  Future<String> localPath() async {
     final directory = await getApplicationDocumentsDirectory();
 
     return directory.path;
   }
 
-  static Future<void> writeFile(String fileName, String content) async {
+  Future<void> writeFile(String fileName, String content) async {
     final path = await localPath();
     final file = File('$path/$fileName');
 
@@ -116,7 +116,7 @@ class Service {
     log('The file: $file');
   }
 
-  static Future<String> readFile(String fileName) async {
+  Future<String> readFile(String fileName) async {
     try {
       final path = await localPath();
       final file = File('$path/$fileName');
@@ -127,7 +127,7 @@ class Service {
     }
   }
 
-  static Future<String> imagePickup({isCamera = true}) async {
+  Future<String> imagePickup({isCamera = true}) async {
     String path = '';
     final ImagePicker picker = ImagePicker();
 
@@ -169,7 +169,7 @@ class Service {
     log('File written to: ${file.path}');
   }
 
-  static Future<void> copyFromCacheToAppFolder(String fullCachePath) async {
+  Future<void> copyFromCacheToAppFolder(String fullCachePath) async {
     final cacheFile = File(fullCachePath);
 
     if (await cacheFile.exists()) {
@@ -191,10 +191,7 @@ class Service {
     }
   }
 
-  static Future<void> addFileToFolder(
-    String sourceFilePath,
-    String folderName,
-  ) async {
+  Future<void> addFileToFolder(String sourceFilePath, String folderName) async {
     final sourceFile = File(sourceFilePath);
 
     if (await sourceFile.exists()) {

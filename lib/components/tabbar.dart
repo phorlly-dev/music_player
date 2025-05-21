@@ -49,18 +49,13 @@ class _TabbarState extends State<Tabbar> with SingleTickerProviderStateMixin {
           elevation: 1,
           centerTitle: true,
           title: Text(widget.title),
-          bottom:
-              widget.tabs.isNotEmpty
-                  ? TabBar(controller: tabController, tabs: widget.tabs)
-                  : null,
+          bottom: widget.tabs.isNotEmpty
+              ? TabBar(controller: tabController, tabs: widget.tabs)
+              : null,
         ),
-        body:
-            widget.tabs.isNotEmpty
-                ? TabBarView(
-                  controller: tabController,
-                  children: widget.tabViews,
-                )
-                : const Center(child: Text('No content')),
+        body: widget.tabs.isNotEmpty
+            ? TabBarView(controller: tabController, children: widget.tabViews)
+            : const Center(child: Text('No content')),
         floatingActionButton: shouldShowFAB ? widget.button : null,
       ),
     );

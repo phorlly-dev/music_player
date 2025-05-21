@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:music_player/components/sample.dart';
 import 'package:music_player/core/functions/index.dart';
 
 class Common {
@@ -135,7 +136,7 @@ class Controls {
   }) {
     return AlertDialog(
       title: Text(
-        model == null ? 'Add New $title' : 'Edit The $title',
+        model == null ? 'Add New $title' : 'Edit A $title',
         textAlign: TextAlign.center,
       ),
       content: Form(
@@ -145,31 +146,34 @@ class Controls {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Common.text('Cancel'),
+        Button(
+          click: () => Navigator.pop(context),
+          label: 'Cancel',
+          icon: Icons.close,
+          color: Colors.black,
         ),
 
         if (model != null && onDelete != null)
-          TextButton(
-            onPressed: () {
+          Button(
+            click: () {
               if (model.id.isNotEmpty) {
                 onDelete.call();
               }
             },
-            child: Common.text('Delete', color: Colors.red),
+            label: 'Delete',
+            icon: Icons.delete_rounded,
+            color: Colors.red,
           ),
 
-        TextButton(
-          onPressed: () {
+        Button(
+          click: () {
             if (Funcs.formKey.currentState!.validate()) {
               model == null ? onSave?.call() : onUpdate?.call();
             }
           },
-          child: Common.text(
-            model == null ? 'Save' : 'Update',
-            color: model == null ? Colors.blue : Colors.green,
-          ),
+          label: model == null ? 'Save' : 'Update',
+          color: model == null ? Colors.blue : Colors.green,
+          icon: model == null ? Icons.save : Icons.update,
         ),
       ],
     );
@@ -225,6 +229,27 @@ class Controls {
           ),
         );
       }),
+    );
+  }
+
+  static Widget icon({
+    required VoidCallback pressed,
+    IconData icon = Icons.add,
+    Color color = Colors.black,
+    double width = 50,
+    // double border = 10.0,
+  }) {
+    return IconButton(
+      onPressed: pressed,
+      icon: Icon(icon),
+      color: color,
+      iconSize: width,
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(
+          const Color.fromARGB(255, 218, 217, 217),
+        ),
+      ),
+      // padding: EdgeInsets.all(2),
     );
   }
 }

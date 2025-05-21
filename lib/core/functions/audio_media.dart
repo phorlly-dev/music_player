@@ -23,4 +23,24 @@ class AudioMedia {
 
     return grouped;
   }
+
+  static Map<String, List<AudioFile>> groupByFavorite(List<AudioFile> songs) {
+    final Map<String, List<AudioFile>> grouped = {};
+
+    for (var song in songs) {
+      if (song.isFavorite) {
+        const key = 'favorite';
+
+        // Initialize the list if the key doesn't exist
+        if (!grouped.containsKey(key)) {
+          grouped[key] = [];
+        }
+
+        // Add the song to the favorites list
+        grouped[key]!.add(song);
+      }
+    }
+
+    return grouped;
+  }
 }

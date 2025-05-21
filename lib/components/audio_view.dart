@@ -37,10 +37,7 @@ class AudioView {
     );
   }
 
-  static Widget albumGroupedListView(
-    BuildContext context,
-    List<AudioFile> songs,
-  ) {
+  static Widget albumGrouped(BuildContext context, List<AudioFile> songs) {
     final groupedSongs = AudioMedia.groupByAlbum(songs);
 
     return ListView(
@@ -51,15 +48,20 @@ class AudioView {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            Container(
+              margin: EdgeInsets.only(top: 14, left: 12),
               child: Text(
-                albumName,
+                albumName.toUpperCase(),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+            ),
+            Divider(
+              thickness: 2, // Line thickness
+              indent: 10, // Left padding
+              endIndent: 10, // Right padding
             ),
             ...albumSongs.map((song) => imageCard(context, model: song)),
           ],
@@ -68,10 +70,7 @@ class AudioView {
     );
   }
 
-  static Widget playListGroupedListView(
-    BuildContext context,
-    List<AudioFile> songs,
-  ) {
+  static Widget playListGrouped(BuildContext context, List<AudioFile> songs) {
     final groupedSongs = AudioMedia.groupByPlayList(songs);
 
     return ListView(
@@ -79,42 +78,73 @@ class AudioView {
         final albumName = entry.key;
         final albumSongs = entry.value;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Text(
-                albumName,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+        return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 14, left: 12),
+                child: Text(
+                  albumName.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            ...albumSongs.map((song) => imageCard(context, model: song)),
-          ],
+              Divider(
+                thickness: 2, // Line thickness
+                indent: 10, // Left padding
+                endIndent: 10, // Right padding
+              ),
+              ...albumSongs.map((song) => imageCard(context, model: song)),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  static Widget favoriteGrouped(BuildContext context, List<AudioFile> songs) {
+    final groupedSongs = AudioMedia.groupByFavorite(songs);
+
+    return ListView(
+      children: groupedSongs.entries.map((entry) {
+        final albumSongs = entry.value;
+
+        return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...albumSongs.map((song) => imageCard(context, model: song)),
+            ],
+          ),
         );
       }).toList(),
     );
   }
 
   static Widget imageCard(BuildContext context, {required AudioFile model}) {
-    return Card(
-      child: ListTile(
-        leading: ImageAsset(path: model.artworkUrl),
-        title: Text(model.title),
-        subtitle: Text(model.artist),
-        trailing: Icon(
-          model.isFavorite ? Icons.favorite : Icons.favorite_border,
-          color: model.isFavorite ? Colors.red : null,
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Card(
+        child: ListTile(
+          leading: ImageAsset(path: model.artworkUrl),
+          title: Text(model.title),
+          subtitle: Text('${model.artist} • ${model.album}'),
+          trailing: Icon(
+            model.isFavorite ? Icons.favorite : Icons.favorite_border,
+            color: model.isFavorite ? Colors.red : null,
+          ),
+          onTap: () {
+            NavLink.go(
+              context: context,
+              screen: SongPlayer(audioFile: model),
+            );
+          },
         ),
-        onTap: () {
-          NavLink.go(
-            context: context,
-            screen: SongPlayer(audioFile: model),
-          );
-        },
       ),
     );
   }
@@ -133,7 +163,7 @@ class AudioView {
     AudioFile(
       id: '2',
       title: 'Night Changes',
-      artist: 'One Direction',
+      artist: ' ',
       album: 'Vol 1',
       duration: Duration(minutes: 3, seconds: 45),
       url: 'assets/audios/2.mp3',
