@@ -89,7 +89,7 @@ class Button extends StatelessWidget {
   final IconData? icon;
   final void Function() click;
   final Color? color;
-  final double? width;
+  final double? width, height;
 
   const Button({
     super.key,
@@ -98,11 +98,13 @@ class Button extends StatelessWidget {
     required this.click,
     this.color = Colors.blue,
     this.width,
+    this.height = 70,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: height,
       width: width,
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 12),
       child: FloatingActionButton.extended(
@@ -171,6 +173,7 @@ class ImageAsset extends StatelessWidget {
               height: height,
               fit: BoxFit.cover,
               image: AssetImage(path),
+              errorBuilder: (_, __, ___) => const Icon(Icons.music_note),
             ),
           )
         : const Icon(Icons.music_note, size: 100);
@@ -179,14 +182,25 @@ class ImageAsset extends StatelessWidget {
 
 class ImageAssetAvatr extends StatelessWidget {
   final String path;
-  final double w;
-  const ImageAssetAvatr({super.key, required this.path, this.w = 50});
+  final double widthFraction;
+  const ImageAssetAvatr({
+    super.key,
+    required this.path,
+    this.widthFraction = .12,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final double width = screenSize.width * widthFraction;
+
     return path.isNotEmpty
-        ? CircleAvatar(radius: w / 2, backgroundImage: AssetImage(path))
-        : Icon(Icons.music_note, size: w);
+        ? CircleAvatar(
+            radius: width / 2,
+            backgroundImage: AssetImage(path),
+            onBackgroundImageError: (__, ___) => const Icon(Icons.music_note),
+          )
+        : Icon(Icons.music_note, size: width);
   }
 }
 

@@ -43,7 +43,13 @@ class MusicService extends Service {
             final item = data[index];
             // log('The item: ${item.title} by ${item.artist}');
 
-            return AudioView.imageCard(context, model: item);
+            return AudioView.imageCard(
+              context,
+              model: item,
+              index: index,
+              playlist: data,
+              title: 'Songs',
+            );
             // return ListTile(
             //   leading: ImageAssetAvatr(path: item.artworkUrl),
             //   title: Text(item.title),

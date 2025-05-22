@@ -18,8 +18,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Music Player',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      theme: ThemeData.dark(), // Use the default dark theme
+      // themeMode: ThemeMode.dark, // Forces dark mode
+      // Or customize the dark theme:
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+        colorScheme: const ColorScheme.dark(
+          surface: Colors.black,
+          primary: Colors.white,
+          secondary: Colors.grey,
+        ),
       ),
       home: const MusicPlayer(),
     );

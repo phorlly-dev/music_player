@@ -47,24 +47,29 @@ class AudioForm {
               decoration: const InputDecoration(labelText: 'Album'),
               validator: (value) => value!.isEmpty ? 'Enter Album' : null,
             ),
+
             // TextFormField(
             //   controller: duration,
             //   decoration: const InputDecoration(labelText: 'Duration (mm:ss)'),
             //   validator:
             //       (value) => value!.contains(':') ? null : 'Format: mm:ss',
             // ),
-            TextFormField(
-              controller: url,
-              decoration: const InputDecoration(labelText: 'Audio URL'),
-              validator: (value) => value!.isEmpty ? 'Enter URL' : null,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: imgUrl,
-              decoration: const InputDecoration(labelText: 'Image URL'),
-              validator: (value) => value!.isEmpty ? 'Enter URL' : null,
-            ),
-            const SizedBox(height: 12),
+            item == null
+                ? TextFormField(
+                    controller: url,
+                    decoration: const InputDecoration(labelText: 'Audio URL'),
+                    validator: (value) => value!.isEmpty ? 'Enter URL' : null,
+                  )
+                : Text(''),
+            // const SizedBox(height: 12),
+            item == null
+                ? TextFormField(
+                    controller: imgUrl,
+                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    validator: (value) => value!.isEmpty ? 'Enter URL' : null,
+                  )
+                : Text(''),
+            // const SizedBox(height: 12),
 
             // Column(
             //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +110,7 @@ class AudioForm {
             //     ),
             //   ],
             // ),
-            const SizedBox(height: 12),
+            // const SizedBox(height: 12),
             SwitchListTile(
               value: isFavorite,
               onChanged: (val) => setState(() => isFavorite = val),

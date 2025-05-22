@@ -29,12 +29,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
           Tab(text: 'Playlists'),
           Tab(text: 'Albums'),
         ],
-        tabViews: const [
-          Center(child: MySong()),
-          Center(child: MyFavorite()),
-          Center(child: MyPlayList()),
-          Center(child: MyAlbum()),
-        ],
+        tabViews: const [MySong(), MyFavorite(), MyPlayList(), MyAlbum()],
         button: Controls.icon(
           pressed: () => AudioForm.showForm(context, null),
           icon: Icons.add,
