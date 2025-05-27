@@ -238,3 +238,77 @@ class TimerSelector extends StatelessWidget {
     );
   }
 }
+
+class ImgAsset extends StatelessWidget {
+  final String path;
+  final double? widthFraction;
+  final double? heightFraction;
+
+  const ImgAsset({
+    super.key,
+    required this.path,
+    this.widthFraction = .12,
+    this.heightFraction = .1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final width = widthFraction != null
+        ? screenSize.width * widthFraction!
+        : null;
+    final height = heightFraction != null
+        ? screenSize.height * heightFraction!
+        : null;
+
+    if (path.isEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          width: width,
+          height: height,
+          color: Colors.grey[300],
+          child: const Icon(Icons.music_note, size: 50, color: Colors.grey),
+        ),
+      );
+    }
+
+    if (path.startsWith('assets/')) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset(
+          path,
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.broken_image),
+        ),
+      );
+    }
+
+    if (path.startsWith('/')) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.file(
+          File(path),
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+        ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.network(
+        path,
+        width: width,
+        height: height,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+      ),
+    );
+  }
+}

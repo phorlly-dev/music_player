@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/components/audio_view.dart';
+import 'package:music_player/components/firebase/audio_view.dart';
 import 'package:music_player/core/models/audio_file.dart';
 import 'package:music_player/core/services/service.dart';
 
 class MusicService extends Service {
-  Future<List<AudioFile>> index() {
-    return geter(
-      collection: 'musics',
-      fromMap: (data, id) => AudioFile.fromMap(data, id),
-    );
-  }
-
   // Add a new
   Future<void> store(AudioFile object) async {
     await poster<AudioFile>(

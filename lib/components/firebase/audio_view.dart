@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/components/song_player.dart';
+import 'package:get/get.dart';
+import 'package:music_player/components/firebase/mp3_player.dart';
 import 'package:music_player/core/functions/audio_media.dart';
-import 'package:music_player/core/links/nav_link.dart';
 import 'package:music_player/core/models/audio_file.dart'; // Adjust import as needed
-import 'package:music_player/components/sample.dart'; // For ImageAsset, NavLink, SongPlayer
+import 'package:music_player/components/global/sample.dart'; // For ImageAsset, NavLink, SongPlayer
 
 class AudioView {
   // Assume groupByAlbum, groupByPlayList, groupByFavorite are defined elsewhere
@@ -130,7 +130,8 @@ class AudioView {
       padding: const EdgeInsets.all(3.0),
       child: Card(
         child: ListTile(
-          leading: ImageAsset(path: model.artworkUrl),
+          // leading: ImageAsset(path: model.artworkUrl),
+          leading: ImgAsset(path: model.artworkUrl),
           title: Text(model.title),
           subtitle: Text('${model.artist} • ${model.album}'),
           trailing: Icon(
@@ -138,9 +139,8 @@ class AudioView {
             color: model.isFavorite ? Colors.red : null,
           ),
           onTap: () {
-            NavLink.go(
-              context: context,
-              screen: SongPlayer(
+            Get.to(
+              () => MP3Player(
                 playlist: playlist,
                 initialIndex: index,
                 title: title,

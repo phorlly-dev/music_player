@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/components/audio_form.dart';
-import 'package:music_player/components/favorite_group.dart';
-import 'package:music_player/components/index.dart';
-import 'package:music_player/core/services/music_service.dart';
-import 'package:music_player/components/tabbar.dart';
-import 'package:music_player/components/album_group.dart';
-import 'package:music_player/components/playlist_group.dart';
-import 'package:music_player/components/song.dart';
+import 'package:music_player/components/firebase/album_group.dart';
+import 'package:music_player/components/firebase/favorite_group.dart';
+import 'package:music_player/components/firebase/playlist_group.dart';
+import 'package:music_player/components/firebase/song.dart';
+import 'package:music_player/components/global/audio_form.dart';
+import 'package:music_player/components/global/index.dart';
+import 'package:music_player/components/global/tabbar.dart';
 
-class MusicPlayer extends StatefulWidget {
+class MusicPlayer extends StatelessWidget {
   const MusicPlayer({super.key});
-
-  @override
-  State<MusicPlayer> createState() => _MusicPlayerState();
-}
-
-class _MusicPlayerState extends State<MusicPlayer> {
-  final service = MusicService();
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +21,14 @@ class _MusicPlayerState extends State<MusicPlayer> {
           Tab(text: 'Playlists'),
           Tab(text: 'Albums'),
         ],
-        tabViews: const [MySong(), MyFavorite(), MyPlayList(), MyAlbum()],
+        tabViews: const [
+          MySong(),
+          FavoriteGroup(),
+          PlayListGroup(),
+          AlbumGroup(),
+        ],
         button: Controls.icon(
-          pressed: () => AudioForm.showForm(context, null),
+          pressed: () => AudioForm.showFormTo(context, null),
           icon: Icons.add,
           width: 40,
         ),

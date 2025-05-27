@@ -2,14 +2,20 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
+import 'package:music_player/core/functions/index.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-class Service {
+abstract class Service {
   final firestore = FirebaseFirestore.instance;
-  // var result = FilePicker.platform.pickFiles();
-  //for upload image files
+
+  void onInit() {
+    // Default implementation (empty)
+  }
+
+  void onClose() {
+    // Default implementation (empty)
+  }
 
   /// Create (Add) a new document with auto ID
   Future<String> poster<T>({
@@ -148,72 +154,54 @@ class Service {
     }
   }
 
-  static Future<void> storeFile(
-    String folderName,
-    String fileName,
-    String content,
-  ) async {
-    final directory =
-        await getApplicationDocumentsDirectory(); // or getTemporaryDirectory()
-    final folderPath = '${directory.path}/$folderName';
-
-    // Create the folder if it doesn't exist
-    final folder = Directory(folderPath);
-    if (!(await folder.exists())) {
-      await folder.create(recursive: true);
+  // Custom app directory for storing audio and image files
+  Future<String> get appDocumentsDir async {
+    final directory = await getApplicationDocumentsDirectory();
+    final customDir = Directory('${directory.path}/storages');
+    if (!await customDir.exists()) {
+      await customDir.create(recursive: true);
     }
-
-    final file = File('$folderPath/$fileName');
-    await file.writeAsString(content);
-
-    log('File written to: ${file.path}');
+    return customDir.path;
   }
 
-  Future<void> copyFromCacheToAppFolder(String fullCachePath) async {
-    final cacheFile = File(fullCachePath);
+  Future<String> copyFileToAppStorage(String sourcePath) async {
+    try {
+      final appDir = await appDocumentsDir;
+      // Get the original filename and extension
+      final originalFileName = sourcePath.split('/').last;
+      final extension = originalFileName.split('.').last;
+      final sanitizedBaseName = Funcs.dateFormat(DateTime.now());
+      // Generate a unique filename using a timestamp
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final uniqueFileName = '${sanitizedBaseName}_$timestamp.$extension';
+      final destinationPath = '$appDir/$uniqueFileName';
 
-    if (await cacheFile.exists()) {
-      final appDocDir = await localPath();
+      final sourceFile = File(sourcePath);
+      if (!await sourceFile.exists()) {
+        throw Exception('Source file does not exist: $sourcePath');
+      }
+      // log('Source file size: ${await sourceFile.length()} bytes');
 
-      final folder = Directory('$appDocDir/assets/images');
-
-      if (!await folder.exists()) {
-        await folder.create(recursive: true);
+      // Skip copying if source and destination are the same
+      if (sourcePath == destinationPath) {
+        // log('Source and destination are the same: $sourcePath');
+        return sourcePath;
       }
 
-      final fileName = p.basename(fullCachePath); // Extract just the filename
-      final newPath = '${folder.path}/$fileName';
+      final copiedFile = await sourceFile.copy(destinationPath);
+      if (!await copiedFile.exists()) {
+        throw Exception('Failed to copy file to $destinationPath');
+      }
+      // log('Copied file to: $destinationPath');
+      // log('Copied file size: ${await copiedFile.length()} bytes');
 
-      await cacheFile.copy(newPath);
-      log('File copied to: $newPath');
-    } else {
-      log('File does not exist at: $fullCachePath');
-    }
-  }
-
-  Future<void> addFileToFolder(String sourceFilePath, String folderName) async {
-    final sourceFile = File(sourceFilePath);
-
-    if (await sourceFile.exists()) {
-      // Get app documents directory
-      final appDir = await localPath();
-      final targetFolder = Directory('$appDir/$folderName');
-
-      // Create folder if it doesn't exist
-      if (!await targetFolder.exists()) {
-        await targetFolder.create(recursive: true);
+      if (await sourceFile.length() != await copiedFile.length()) {
+        throw Exception('File size mismatch after copying');
       }
 
-      // Get just the file name
-      final fileName = p.basename(sourceFilePath);
-
-      // Destination file path
-      final destinationPath = '${targetFolder.path}/$fileName';
-      await sourceFile.copy(destinationPath);
-
-      log('File added to folder: $destinationPath');
-    } else {
-      log('Source file does not exist: $sourceFilePath');
+      return destinationPath;
+    } catch (e) {
+      throw Exception('Error copying file: $e');
     }
   }
 }

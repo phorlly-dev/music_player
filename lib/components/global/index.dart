@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:music_player/components/sample.dart';
+import 'package:get/get.dart';
+import 'package:music_player/components/global/sample.dart';
 import 'package:music_player/core/functions/index.dart';
 
 class Common {
@@ -147,7 +148,7 @@ class Controls {
       ),
       actions: [
         Button(
-          click: () => Navigator.pop(context),
+          click: () => Get.back(),
           label: 'Cancel',
           icon: Icons.close,
           color: Colors.black,

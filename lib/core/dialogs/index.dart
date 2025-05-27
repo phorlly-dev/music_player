@@ -1,26 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/components/index.dart';
+import 'package:get/get.dart';
+import 'package:music_player/components/global/sample.dart';
 
 class Popup {
   static confirmDelete(
     BuildContext context, {
     required String message,
     required VoidCallback confirmed,
+    VoidCallback? refresh,
   }) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text('Confirm Delete!', textAlign: TextAlign.center),
-          content: Text('Are you sure you want to delete:\n $message?'),
+          content: Text('Are you sure?\n You want to delete: $message?'),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Common.text('Cancel'),
+            Button(
+              click: () => Get.back(),
+              label: 'Cancel',
+              icon: Icons.close,
+              color: Colors.black,
             ),
-            TextButton(
-              onPressed: confirmed,
-              child: Common.text('Delete', color: Colors.red),
+            Button(
+              click: () {
+                confirmed.call();
+                refresh?.call();
+                Get.back();
+              },
+              label: 'Delete',
+              color: Colors.red,
+              icon: Icons.delete,
             ),
           ],
         );

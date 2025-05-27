@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/core/functions/index.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DurationBloc extends StatelessWidget {
   final AudioPlayer player;
-  final Stream<DurationState> durationStream;
+  final Stream<Duration?> durationStream;
+  final Stream<Duration> positionStream;
 
   const DurationBloc({
     super.key,
     required this.player,
     required this.durationStream,
+    required this.positionStream,
   });
+
+  Stream<DurationState> get durationStateStream =>
+      Rx.combineLatest2<Duration, Duration, DurationState>(
+        positionStream,
+        durationStream.whereType<Duration>(),
+        (position, duration) => DurationState(position, duration),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +40,7 @@ class DurationBloc extends StatelessWidget {
     }
 
     return StreamBuilder<DurationState>(
-      stream: durationStream,
+      stream: durationStateStream,
       builder: (context, snapshot) {
         final durationState = snapshot.data;
         final position = durationState?.position ?? Duration.zero;

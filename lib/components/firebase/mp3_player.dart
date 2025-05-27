@@ -1,21 +1,20 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music_player/components/duration_bloc.dart';
-import 'package:music_player/components/sample.dart';
+import 'package:music_player/components/global/duration_bloc.dart';
+import 'package:music_player/components/global/sample.dart';
 import 'package:music_player/core/messages/index.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:music_player/core/models/audio_file.dart';
 import 'package:music_player/core/services/music_service.dart';
-import 'package:music_player/components/audio_form.dart';
-import 'package:music_player/components/topbar.dart';
+import 'package:music_player/components/global/audio_form.dart';
+import 'package:music_player/components/global/topbar.dart';
 
-class SongPlayer extends StatefulWidget {
+class MP3Player extends StatefulWidget {
   final List<AudioFile> playlist;
   final int initialIndex;
   final String title;
 
-  const SongPlayer({
+  const MP3Player({
     super.key,
     required this.playlist,
     required this.initialIndex,
@@ -23,10 +22,10 @@ class SongPlayer extends StatefulWidget {
   });
 
   @override
-  State<SongPlayer> createState() => _SongPlayerState();
+  State<MP3Player> createState() => _MP3PlayerState();
 }
 
-class _SongPlayerState extends State<SongPlayer> {
+class _MP3PlayerState extends State<MP3Player> {
   final AudioPlayer _player = AudioPlayer();
   final service = MusicService();
   late int currentIndex;
@@ -59,6 +58,7 @@ class _SongPlayerState extends State<SongPlayer> {
       await _player.setAudioSource(
         AudioSource.asset(playlist[currentIndex].url),
       );
+
       _player.seek(Duration.zero); // Reset position to 0
     } catch (e) {
       log("Error loading audio source: $e");
@@ -117,13 +117,6 @@ class _SongPlayerState extends State<SongPlayer> {
     // _loadAudio();
   }
 
-  Stream<DurationState> get durationStateStream =>
-      Rx.combineLatest2<Duration, Duration, DurationState>(
-        _player.positionStream,
-        _player.durationStream.whereType<Duration>(),
-        (position, duration) => DurationState(position, duration),
-      );
-
   @override
   void dispose() {
     _player.dispose();
@@ -168,7 +161,7 @@ class _SongPlayerState extends State<SongPlayer> {
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
-                        AudioForm.showForm(context, null);
+                        AudioForm.showForm(context, model: null);
                       },
                       tooltip: "Add New",
                     ),
@@ -216,7 +209,7 @@ class _SongPlayerState extends State<SongPlayer> {
                     IconButton(
                       icon: const Icon(Icons.more_vert),
                       onPressed: () {
-                        AudioForm.showForm(context, currentAudio);
+                        // AudioForm.showForm(context, currentAudio);
                       },
                       tooltip: "Add More",
                     ),
@@ -224,7 +217,8 @@ class _SongPlayerState extends State<SongPlayer> {
                 ),
 
                 DurationBloc(
-                  durationStream: durationStateStream,
+                  durationStream: _player.durationStream,
+                  positionStream: _player.positionStream,
                   player: _player,
                 ),
                 const SizedBox(height: 30),
