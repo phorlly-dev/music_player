@@ -13,7 +13,6 @@ class PlayerController extends GetxController {
   RxInt currentIndex = 0.obs;
   RxList<SongFile> songs = <SongFile>[].obs;
   RxString title = 'Song'.obs;
-  RxList<String> playlist = <String>[].obs;
 
   @override
   void onInit() {
@@ -31,37 +30,26 @@ class PlayerController extends GetxController {
     _playbackService.player.durationStream.listen((dur) {
       duration.value = dur ?? Duration.zero;
     });
-    _playbackService.player.sequenceStateStream.listen((sequenceState) {
-      if (sequenceState == null) return;
-
-      final currentItem = sequenceState.currentIndex;
-      if (currentItem != currentIndex.value) {
-        currentIndex.value = currentItem;
-        // log('PlayerController: Updated currentIndex to $currentItem');
-      }
-
-      if (sequenceState.sequence.isEmpty ||
-          currentItem >= sequenceState.sequence.length - 1) {
-        _playbackService.player.playerStateStream.listen((state) {
-          if (state.processingState == ProcessingState.completed) {
-            isPlaying.value = true;
-            currentIndex.value = 0; // Reset to first song
-            // log('Playback completed, resetting to first song');
-            seek(Duration.zero);
-            play();
-          }
-        });
+    _playbackService.player.playerStateStream.listen((state) async {
+      if (state.processingState == ProcessingState.completed) {
+        if (currentIndex.value < songs.length - 1) {
+          // isPlaying.value = true;
+          seek(Duration.zero);
+          await next();
+          play(); // Ensure the next song starts playing
+          // log('Playback completed, resetting to next song');
+        } else {
+          seek(Duration.zero);
+          currentIndex.value = 0; // Reset to first song
+          play(); // Ensure the next song starts playing
+          // log('Playback completed, resetting to first song');
+        }
       }
     });
   }
 
   Future<void> init(List<SongFile> songList, int initialIndex) async {
     try {
-      songList.map((value) {
-        if (value.playlists.isNotEmpty) {
-          playlist.value = value.playlists;
-        }
-      });
       songs.value = songList;
       currentIndex.value = initialIndex;
       await _playbackService.init(songList, initialIndex);
@@ -80,7 +68,7 @@ class PlayerController extends GetxController {
       currentIndex.value++;
       await _playbackService.next();
       isPlaying.value = true;
-      // play(); // Ensure the next song starts playing
+      play(); // Ensure the next song starts playing
     }
   }
 
@@ -89,7 +77,7 @@ class PlayerController extends GetxController {
       currentIndex.value--;
       await _playbackService.previous();
       isPlaying.value = true;
-      // play(); // Ensure the previous song starts playing
+      play(); // Ensure the previous song starts playing
     }
   }
 
