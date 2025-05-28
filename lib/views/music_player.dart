@@ -4,7 +4,6 @@ import 'package:music_player/components/firebase/favorite_group.dart';
 import 'package:music_player/components/firebase/playlist_group.dart';
 import 'package:music_player/components/firebase/song.dart';
 import 'package:music_player/components/global/audio_form.dart';
-import 'package:music_player/components/global/index.dart';
 import 'package:music_player/components/global/tabbar.dart';
 
 class MusicPlayer extends StatelessWidget {
@@ -27,10 +26,11 @@ class MusicPlayer extends StatelessWidget {
           PlayListGroup(),
           AlbumGroup(),
         ],
-        button: Controls.icon(
-          pressed: () => AudioForm.showFormTo(context, null),
-          icon: Icons.add,
-          width: 40,
+        button: IconButton(
+          icon: const Icon(Icons.add_circle_outline),
+          onPressed: () => AudioForm.showFormTo(context, null),
+          tooltip: 'Add New Song',
+          color: Colors.blue,
         ),
       ),
     );

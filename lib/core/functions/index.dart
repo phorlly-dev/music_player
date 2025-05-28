@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +10,6 @@ class Funcs {
   //image path
   static var imagePath = "";
   static final picker = ImagePicker();
-  static final formKey = GlobalKey<FormState>();
 
   static bool isSameMinute(DateTime a, DateTime b) {
     return a.year == b.year &&

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:music_player/components/global/sample.dart';
-import 'package:music_player/core/functions/index.dart';
 
 class Common {
   static Widget text(
@@ -135,13 +134,15 @@ class Controls {
     VoidCallback? onSave,
     VoidCallback? onUpdate,
   }) {
+    final formKey = GlobalKey<FormState>();
+
     return AlertDialog(
       title: Text(
         model == null ? 'Add New $title' : 'Edit A $title',
         textAlign: TextAlign.center,
       ),
       content: Form(
-        key: Funcs.formKey,
+        key: formKey,
         child: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: children),
         ),
@@ -168,7 +169,7 @@ class Controls {
 
         Button(
           click: () {
-            if (Funcs.formKey.currentState!.validate()) {
+            if (formKey.currentState!.validate()) {
               model == null ? onSave?.call() : onUpdate?.call();
             }
           },

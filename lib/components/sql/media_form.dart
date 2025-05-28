@@ -28,7 +28,7 @@ class _SongFormDialogState extends State<SongFormDialog> {
   final _albumController = TextEditingController();
   String? _audioPath;
   String? _imagePath;
-  final SongService service = SongService();
+  final service = SongService();
 
   // Initialize the controllers with existing values if available
   @override

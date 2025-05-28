@@ -7,7 +7,7 @@ class AudioFile {
   final String url;
   final String artworkUrl; // Can be a URL or file path
   bool isFavorite;
-  List<String> playlists; // List of playlist names this song belongs to
+  // List<String> playlists; // List of playlist names this song belongs to
 
   AudioFile({
     required this.id,
@@ -18,7 +18,7 @@ class AudioFile {
     required this.url,
     this.artworkUrl = '',
     this.isFavorite = false,
-    this.playlists = const [],
+    // this.playlists = const [],
   });
 
   factory AudioFile.fromMap(Map<String, dynamic> map, String docId) {
@@ -31,7 +31,7 @@ class AudioFile {
       url: map['url'] ?? '',
       artworkUrl: map['artworkUrl'] ?? '',
       isFavorite: map['isFavorite'] ?? false,
-      playlists: List<String>.from(map['playlists'] ?? []),
+      // playlists: List<String>.from(map['playlists'] ?? []),
     );
   }
 
@@ -44,7 +44,7 @@ class AudioFile {
       'url': url,
       'artworkUrl': artworkUrl,
       'isFavorite': isFavorite,
-      'playlists': playlists,
+      // 'playlists': playlists,
     };
   }
 }

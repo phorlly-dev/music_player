@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/components/global/duration_bloc.dart';
 import 'package:music_player/components/global/sample.dart';
+import 'package:music_player/core/dialogs/index.dart';
 import 'package:music_player/core/messages/index.dart';
 import 'package:music_player/core/models/audio_file.dart';
 import 'package:music_player/core/services/music_service.dart';
@@ -44,7 +46,16 @@ class _MP3PlayerState extends State<MP3Player> {
 
     _player.processingStateStream.listen((state) {
       if (state == ProcessingState.completed) {
-        goToNext();
+        if (currentIndex < widget.playlist.length - 1) {
+          // Automatically go to the next song when the current one finishes
+          goToNext();
+        } else {
+          setState(() {
+            // Optionally reset the player when the last song finishes
+            currentIndex = 0; // Reset to the first song
+            _loadAudio(); // Reload the first song
+          });
+        }
       }
     });
   }
@@ -159,11 +170,11 @@ class _MP3PlayerState extends State<MP3Player> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(Icons.edit_document),
                       onPressed: () {
-                        AudioForm.showForm(context, model: null);
+                        AudioForm.showFormTo(context, currentAudio);
                       },
-                      tooltip: "Add New",
+                      tooltip: "Edit Document",
                     ),
                     IconButton(
                       icon: Icon(
@@ -207,11 +218,22 @@ class _MP3PlayerState extends State<MP3Player> {
                       tooltip: "Add to Favorite",
                     ),
                     IconButton(
-                      icon: const Icon(Icons.more_vert),
+                      icon: const Icon(Icons.delete_rounded),
                       onPressed: () {
-                        // AudioForm.showForm(context, currentAudio);
+                        Popup.confirmDelete(
+                          context,
+                          message: currentAudio.title,
+                          confirmed: () async {
+                            await service.remove(currentAudio.id);
+                            Get.back();
+                            Msg.showSuccess(
+                              title: 'Remove the music',
+                              message: 'Removed the ${currentAudio.title}',
+                            );
+                          },
+                        );
                       },
-                      tooltip: "Add More",
+                      tooltip: "Remove Document",
                     ),
                   ],
                 ),
