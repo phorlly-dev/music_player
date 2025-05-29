@@ -2,9 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player/core/functions/index.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 abstract class Service {
   final firestore = FirebaseFirestore.instance;
@@ -203,5 +205,67 @@ abstract class Service {
     } catch (e) {
       throw Exception('Error copying file: $e');
     }
+  }
+
+  Future<bool> permission() async {
+    // var status = await Permission.storage.request();
+
+    // return status.isGranted ? true : false;
+    try {
+      if (await Permission.storage.isGranted) {
+        // log('Storage permission already granted');
+        return true;
+      }
+      if (await Permission.audio.isGranted) {
+        // log('Audio permission already granted');
+        return true;
+      }
+      if (await Permission.photos.isGranted) {
+        // log('Photos permission already granted');
+        return true;
+      }
+
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.storage, // For Android 12 and below
+        Permission.audio, // For Android 13+
+        Permission.photos, // Optional, for artwork
+      ].request();
+
+      bool granted =
+          statuses[Permission.storage]!.isGranted ||
+          statuses[Permission.audio]!.isGranted ||
+          statuses[Permission.photos]!.isGranted;
+
+      if (!granted) {
+        if (await Permission.storage.isPermanentlyDenied ||
+            await Permission.audio.isPermanentlyDenied ||
+            await Permission.photos.isPermanentlyDenied) {
+          showSnackbar(
+            'Permission Required',
+            'Please enable permissions in settings.',
+            mainButton: TextButton(
+              onPressed: () => openAppSettings(),
+              child: const Text('Open Settings'),
+            ),
+          );
+        }
+      }
+
+      return granted;
+    } catch (e) {
+      log('Error requesting permissions: $e');
+      showSnackbar('Error', 'Failed to request permissions: $e');
+      return false;
+    }
+  }
+
+  void showSnackbar(String title, String message, {TextButton? mainButton}) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 3),
+      mainButton: mainButton,
+    );
   }
 }

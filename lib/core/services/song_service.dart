@@ -3,11 +3,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:music_player/core/models/song_file.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:music_player/core/services/service.dart';
@@ -87,7 +85,7 @@ class SongService extends Service with WidgetsBindingObserver {
     _isFetching = true;
 
     try {
-      bool hasPermission = await _requestStoragePermission();
+      bool hasPermission = await permission();
       if (!hasPermission) {
         showSnackbar(
           'Permission Denied',
@@ -289,55 +287,6 @@ class SongService extends Service with WidgetsBindingObserver {
     return maps.map((map) => SongFile.fromMap(map)).toList();
   }
 
-  Future<bool> _requestStoragePermission() async {
-    try {
-      if (await Permission.storage.isGranted) {
-        // log('Storage permission already granted');
-        return true;
-      }
-      if (await Permission.audio.isGranted) {
-        // log('Audio permission already granted');
-        return true;
-      }
-      if (await Permission.photos.isGranted) {
-        // log('Photos permission already granted');
-        return true;
-      }
-
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.storage, // For Android 12 and below
-        Permission.audio, // For Android 13+
-        Permission.photos, // Optional, for artwork
-      ].request();
-
-      bool granted =
-          statuses[Permission.storage]!.isGranted ||
-          statuses[Permission.audio]!.isGranted ||
-          statuses[Permission.photos]!.isGranted;
-
-      if (!granted) {
-        if (await Permission.storage.isPermanentlyDenied ||
-            await Permission.audio.isPermanentlyDenied ||
-            await Permission.photos.isPermanentlyDenied) {
-          showSnackbar(
-            'Permission Required',
-            'Please enable permissions in settings.',
-            mainButton: TextButton(
-              onPressed: () => openAppSettings(),
-              child: const Text('Open Settings'),
-            ),
-          );
-        }
-      }
-
-      return granted;
-    } catch (e) {
-      log('Error requesting permissions: $e');
-      showSnackbar('Error', 'Failed to request permissions: $e');
-      return false;
-    }
-  }
-
   Stream<List<SongFile>> get songsStream => _songsController.stream;
 
   StreamBuilder<List<SongFile>> songsStreamBuilder({
@@ -359,16 +308,6 @@ class SongService extends Service with WidgetsBindingObserver {
           return builder(context, songs);
         }
       },
-    );
-  }
-
-  void showSnackbar(String title, String message, {TextButton? mainButton}) {
-    Get.snackbar(
-      title,
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 3),
-      mainButton: mainButton,
     );
   }
 }

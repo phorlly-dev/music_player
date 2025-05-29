@@ -1,0 +1,31 @@
+ {
+  "project_info": {
+    "project_number": "156912675917",
+    "project_id": "simple-app-9b557",
+    "storage_bucket": "simple-app-9b557.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156912675917:android:98606aac6dc1639f040004",
+        "android_client_info": {
+          "package_name": "com.idnkt78.music_player"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwDX-znhmNV52Kb7VfeaoFQIO3sOqfkwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+
+OneSignal.initialize("554a089c-a5ad-4ec6-9741-1063bb2e07e5");

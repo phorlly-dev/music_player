@@ -3,10 +3,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:music_player/core/services/service.dart';
 
-class Funcs {
+class Funcs extends Service {
   //image path
   static var imagePath = "";
   static final picker = ImagePicker();
@@ -44,12 +43,6 @@ class Funcs {
     return text[0].toUpperCase() + text.substring(1);
   }
 
-  Future<bool> permission() async {
-    var status = await Permission.storage.request();
-
-    return status.isGranted ? true : false;
-  }
-
   Future<String> pickFile({bool isImage = true}) async {
     var path = '';
     if (await permission()) {
@@ -69,15 +62,6 @@ class Funcs {
     }
 
     return path;
-  }
-
-  Future<String> copyFileToAppStorage(String filePath) async {
-    final appDir = await getApplicationDocumentsDirectory();
-    final fileName = filePath.split('/').last;
-    final newPath = '${appDir.path}/$fileName';
-    await File(filePath).copy(newPath);
-
-    return newPath;
   }
 
   static dateFormat(DateTime value) {

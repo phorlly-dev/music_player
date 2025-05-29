@@ -4,19 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 // import 'package:music_player/views/music_player.dart';
 import 'package:music_player/views/song_player.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light, // White icons
-      systemNavigationBarColor: Colors.black,
-      systemNavigationBarIconBrightness: Brightness.light, // White icons
-    ),
-  );
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  // NOTE: Replace with your own app ID from https://www.onesignal.com
+  OneSignal.initialize("85e46b10-14e0-48a1-bc03-ced909ff21da");
+  OneSignal.Notifications.requestPermission(true);
 
   runApp(const MyApp());
 }

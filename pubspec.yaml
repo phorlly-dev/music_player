@@ -29,6 +29,7 @@ dependencies:
   on_audio_query:
   just_audio_background: ^0.0.1-beta.12
   modal_bottom_sheet: ^3.0.0
+  onesignal_flutter: ^5.3.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
